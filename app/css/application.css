@@ -34,3 +34,9 @@ h1 {
 .tic { color: hsla(   2, 64.7%, 50.0%, 1 );}
 .tac { color: hsla( 120, 39.6%, 46.0%, 1 );}
 .toe { color: hsla( 208, 55.9%, 44.5%, 1 );}
+
+.board {
+  width: 240px;
+  height: 240px;
+  margin: 10px auto 20px;
+}
