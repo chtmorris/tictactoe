@@ -4,6 +4,7 @@
   hsla(   2, 64.7%,  50.0%, 1 ) - red
   hsla( 120, 39.6%,  46.0%, 1 ) - green
   hsla( 208, 55.9%,  44.5%, 1 ) - blue
+  hsla(   0,  0.0%,  60.0%, 1 ) - medium grey
 */
 
 
@@ -40,3 +41,24 @@ h1 {
   height: 240px;
   margin: 10px auto 20px;
 }
+
+.board-row {
+  clear: both;
+}
+
+.boarder-cell {
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+  font-size: 60px;
+  float: left;
+  text-align: center;
+  text-transform: uppercase;
+  width: 78px;
+  height: 78px;
+  padding-top: 5px;
+  border: 1px solid hsla( 0, 0.0%, 60.0%, 1 );
+}
+
+.top    { border-top:    0;}
+.bottom { border-bottom: 0;}
+.left   { border-left:   0;}
+.right  { border-right:  0;}
