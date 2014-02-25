@@ -3,7 +3,7 @@
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   $(function() {
-    var WIN_PATTERNS, checkForWin, clearBoard, counter, getCellNumber, isEmpty, markCell, resetGame;
+    var WIN_PATTERNS, checkForTie, checkForWin, clearBoard, counter, getBoard, getCellNumber, isBlocked, isEmpty, markCell, resetGame;
     counter = 0;
     WIN_PATTERNS = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
     isEmpty = function(cell) {
@@ -22,6 +22,31 @@
       clearBoard();
       $('#gameboard').hide();
       return $('#start-game').fadeIn(500);
+    };
+    getBoard = function() {
+      return ($('.board-cell').map(function(idx, el) {
+        return $(el).text();
+      })).get();
+    };
+    isBlocked = function(pattern) {
+      var a, board;
+      board = getBoard();
+      a = [board[pattern[0]], board[pattern[1]], board[pattern[2]]];
+      return __indexOf.call(a, 'x') >= 0 && __indexOf.call(a, 'o') >= 0;
+    };
+    checkForTie = function() {
+      var openPattern, p, _i, _len;
+      openPattern = 8;
+      for (_i = 0, _len = WIN_PATTERNS.length; _i < _len; _i++) {
+        p = WIN_PATTERNS[_i];
+        if (isBlocked(p)) {
+          openPattern -= 1;
+        }
+      }
+      if (openPattern <= 1) {
+        alert('Tie game!');
+        return resetGame();
+      }
     };
     checkForWin = function(cell) {
       var board, p, patternsToTest, win, _i, _len, _ref, _ref1;
@@ -51,8 +76,9 @@
       cell.addClass(mark);
       counter += 1;
       if (counter > 4) {
-        return checkForWin(getCellNumber(cell));
+        checkForWin(getCellNumber(cell));
       }
+      return checkForTie();
     };
     $('#start-game').on('click', function(e) {
       clearBoard();

@@ -29,6 +29,23 @@ $ ->
     $('#gameboard').hide()
     $('#start-game').fadeIn(500)
 
+  getBoard = ->
+    ( $('.board-cell').map (idx, el) -> $(el).text() ).get()
+
+  isBlocked = (pattern) ->
+    board = getBoard()
+    a = [board[pattern[0]], board[pattern[1]], board[pattern[2]]]
+    'x' in a and 'o' in a
+
+  checkForTie = ->
+    openPattern = 8
+    for p in WIN_PATTERNS
+      if isBlocked(p) then openPattern -=1
+
+    if openPattern <= 1
+      alert 'Tie game!'
+      resetGame()
+
   checkForWin = (cell) ->
     win = ''
     board = ( $('.board-cell').map (idx, el) -> $(el).text() ).get()
@@ -50,6 +67,7 @@ $ ->
     cell.addClass mark
     counter += 1
     checkForWin( getCellNumber(cell) ) if counter > 4
+    checkForTie()
 
   # Handle start game clicks
   $('#start-game').on 'click', (e) ->
