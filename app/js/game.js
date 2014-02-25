@@ -35,7 +35,7 @@
       return __indexOf.call(a, 'x') >= 0 && __indexOf.call(a, 'o') >= 0;
     };
     checkForTie = function() {
-      var openPattern, p, _i, _len;
+      var board, openPattern, p, _i, _len, _ref, _ref1;
       openPattern = 8;
       for (_i = 0, _len = WIN_PATTERNS.length; _i < _len; _i++) {
         p = WIN_PATTERNS[_i];
@@ -43,9 +43,15 @@
           openPattern -= 1;
         }
       }
-      if (openPattern <= 1) {
+      if (openPattern < 1) {
         alert('Tie game!');
         return resetGame();
+      } else if (openPattern === 1) {
+        board = getBoard();
+        if (((board[p[0]] === (_ref1 = board[p[1]]) && _ref1 === (_ref = board[p[2]])) && _ref === '')) {
+          alert('Tie game!');
+          return resetGame();
+        }
       }
     };
     checkForWin = function(cell) {

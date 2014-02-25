@@ -42,9 +42,14 @@ $ ->
     for p in WIN_PATTERNS
       if isBlocked(p) then openPattern -=1
 
-    if openPattern <= 1
+    if openPattern < 1
       alert 'Tie game!'
       resetGame()
+    else if openPattern == 1
+      board = getBoard()
+      if board[p[0]] == board[p[1]] == board[p[2]] == ''
+        alert 'Tie game!'
+        resetGame()
 
   checkForWin = (cell) ->
     win = ''
