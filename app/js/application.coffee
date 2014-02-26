@@ -19,15 +19,15 @@ class BoardCtrl
     @$scope.cells = {}
     @$scope.mark = @mark
 
-  getBoard: (pattern) =>
+  getRow: (pattern) =>
     c = @$scope.cells
     c0 = c[pattern[0]] || pattern[0]
     c1 = c[pattern[1]] || pattern[1]
     c2 = c[pattern[2]] || pattern[2]
     "#{c0}#{c1}#{c2}"
 
-  someoneWon: (board) ->
-    'xxx' == board || 'ooo' == board
+  someoneWon: (row) ->
+    'xxx' == row || 'ooo' == row
 
   resetBoard: =>
     @$scope.cells = {}
@@ -46,8 +46,8 @@ class BoardCtrl
 
   parseBoard: =>
     for pattern in @Settings.WIN_PATTERNS
-      board = @getBoard(pattern)
-      @announceWinner() if @someoneWon(board)
+      row = @getRow(pattern)
+      @announceWinner() if @someoneWon(row)
 
   mark: (@$event) =>
     cell = @$event.target.dataset.index
