@@ -46,8 +46,13 @@
       return Object.keys(this.$scope.cells).length;
     };
 
-    BoardCtrl.prototype.player = function() {
-      if (this.numberOfMoves() % 2 === 0) {
+    BoardCtrl.prototype.player = function(options) {
+      var moves;
+      options || (options = {
+        whoMovedLast: false
+      });
+      moves = this.numberOfMoves() - (options.whoMovedLast ? 1 : 0);
+      if (moves % 2 === 0) {
         return 'x';
       } else {
         return 'o';
@@ -56,7 +61,9 @@
 
     BoardCtrl.prototype.announceWinner = function() {
       var winner;
-      winner = this.numberOfMoves() % 2 === 0 ? 'o' : 'x';
+      winner = this.player({
+        whoMovedLast: true
+      });
       return alert("" + winner + " wins!");
     };
 
@@ -81,7 +88,7 @@
       this.$event = $event;
       cell = this.$event.target.dataset.index;
       player = this.player();
-      this.$scope.cells[cell] = player;
+      this.$scope.cells[cell] = this.player();
       return this.parseBoard();
     };
 
