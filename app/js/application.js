@@ -21,9 +21,17 @@
       this.numberOfMoves = __bind(this.numberOfMoves, this);
       this.resetBoard = __bind(this.resetBoard, this);
       this.getRow = __bind(this.getRow, this);
+      this.getPatterns = __bind(this.getPatterns, this);
       this.$scope.cells = {};
+      this.$scope.patternsToTest = this.getPatterns();
       this.$scope.mark = this.mark;
     }
+
+    BoardCtrl.prototype.getPatterns = function() {
+      return this.Settings.WIN_PATTERNS.filter(function() {
+        return true;
+      });
+    };
 
     BoardCtrl.prototype.getRow = function(pattern) {
       var c, c0, c1, c2;
@@ -68,19 +76,16 @@
     };
 
     BoardCtrl.prototype.parseBoard = function() {
-      var pattern, row, _i, _len, _ref, _results;
-      _ref = this.Settings.WIN_PATTERNS;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        pattern = _ref[_i];
-        row = this.getRow(pattern);
-        if (this.someoneWon(row)) {
-          _results.push(this.announceWinner());
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
+      return this.$scope.patternsToTest = this.$scope.patternsToTest.filter((function(_this) {
+        return function(pattern) {
+          var row;
+          row = _this.getRow(pattern);
+          if (_this.someoneWon(row)) {
+            _this.announceWinner();
+          }
+          return true;
+        };
+      })(this));
     };
 
     BoardCtrl.prototype.mark = function($event) {

@@ -17,7 +17,11 @@ ticTacToe.constant 'Settings',
 class BoardCtrl
   constructor: (@$scope, @Settings) ->
     @$scope.cells = {}
+    @$scope.patternsToTest = @getPatterns()
     @$scope.mark = @mark
+
+  getPatterns: =>
+    @Settings.WIN_PATTERNS.filter -> true
 
   getRow: (pattern) =>
     c = @$scope.cells
@@ -45,9 +49,10 @@ class BoardCtrl
     alert ("#{winner} wins!")
 
   parseBoard: =>
-    for pattern in @Settings.WIN_PATTERNS
+    @$scope.patternsToTest = @$scope.patternsToTest.filter (pattern) =>
       row = @getRow(pattern)
       @announceWinner() if @someoneWon(row)
+      true
 
   mark: (@$event) =>
     cell = @$event.target.dataset.index
