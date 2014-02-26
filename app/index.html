@@ -9,22 +9,22 @@
     <header role="banner">
       <h1><span class="tic">Tic</span><span class="tac">Tac</span><span class="toe">Toe</span></h1>
     </header>
-    <main role="main" data-ng-controller="BoardController">
+    <main role="main" data-ng-controller="BoardCtrl">
       <section id="gameboard" class="board">
         <div id="row-0">
-          <div id="cell-0" data-index='0' data-ng-click='mark(0)' class="board-cell top left">{{cells.0}}</div>
-          <div id="cell-1" data-index='0' data-ng-click='mark(1)' class="board-cell top center">{{cells.1}}</div>
-          <div id="cell-2" data-index='0' data-ng-click='mark(2)' class="board-cell top right">{{cells.2}}</div>
+          <div id="cell-0" data-index='0' data-ng-click='mark(0)' class="board-cell top left {{cells.0}}">{{cells.0}}</div>
+          <div id="cell-1" data-index='0' data-ng-click='mark(1)' class="board-cell top center {{cells.1}}">{{cells.1}}</div>
+          <div id="cell-2" data-index='0' data-ng-click='mark(2)' class="board-cell top right {{cells.2}}">{{cells.2}}</div>
         </div>
         <div id="row-1">
-          <div id="cell-3" data-index='0' data-ng-click='mark(3)' class="board-cell middle left">{{cells.3}}</div>
-          <div id="cell-4" data-index='0' data-ng-click='mark(4)' class="board-cell middle center">{{cells.4}}</div>
-          <div id="cell-5" data-index='0' data-ng-click='mark(5)' class="board-cell middle right">{{cells.5}}</div>
+          <div id="cell-3" data-index='0' data-ng-click='mark(3)' class="board-cell middle left {{cells.3}}">{{cells.3}}</div>
+          <div id="cell-4" data-index='0' data-ng-click='mark(4)' class="board-cell middle center {{cells.4}}">{{cells.4}}</div>
+          <div id="cell-5" data-index='0' data-ng-click='mark(5)' class="board-cell middle right {{cells.5}}">{{cells.5}}</div>
         </div>
         <div id="row-2">
-          <div id="cell-6" data-index='0' data-ng-click='mark(6)' class="board-cell bottom left">{{cells.6}}</div>
-          <div id="cell-7" data-index='0' data-ng-click='mark(7)' class="board-cell bottom center">{{cells.7}}</div>
-          <div id="cell-8" data-index='0' data-ng-click='mark(8)' class="board-cell bottom right">{{cells.8}}</div>
+          <div id="cell-6" data-index='0' data-ng-click='mark(6)' class="board-cell bottom left {{cells.6}}">{{cells.6}}</div>
+          <div id="cell-7" data-index='0' data-ng-click='mark(7)' class="board-cell bottom center {{cells.7}}">{{cells.7}}</div>
+          <div id="cell-8" data-index='0' data-ng-click='mark(8)' class="board-cell bottom right {{cells.8}}">{{cells.8}}</div>
         </div>
       </section>
     </main>
