@@ -15,14 +15,60 @@
       this.$scope = $scope;
       this.Settings = Settings;
       this.mark = __bind(this.mark, this);
+      this.parseBoard = __bind(this.parseBoard, this);
+      this.announceWinner = __bind(this.announceWinner, this);
+      this.resetBoard = __bind(this.resetBoard, this);
+      this.getBoard = __bind(this.getBoard, this);
       this.$scope.cells = {};
       this.$scope.mark = this.mark;
     }
 
-    BoardCtrl.prototype.mark = function(cell) {
-      var player;
+    BoardCtrl.prototype.getBoard = function(pattern) {
+      var c, c0, c1, c2;
+      c = this.$scope.cells;
+      c0 = c[pattern[0]] || pattern[0];
+      c1 = c[pattern[1]] || pattern[1];
+      c2 = c[pattern[2]] || pattern[2];
+      return "" + c0 + c1 + c2;
+    };
+
+    BoardCtrl.prototype.someoneWon = function(board) {
+      return 'xxx' === board || 'ooo' === board;
+    };
+
+    BoardCtrl.prototype.resetBoard = function() {
+      return this.$scope.cells = {};
+    };
+
+    BoardCtrl.prototype.announceWinner = function() {
+      var winner;
+      winner = this.$scope.cells % 2 === 0 ? 'o' : 'x';
+      return alert("" + winner + " wins!");
+    };
+
+    BoardCtrl.prototype.parseBoard = function() {
+      var board, pattern, _i, _len, _ref, _results;
+      _ref = this.Settings.WIN_PATTERNS;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pattern = _ref[_i];
+        board = this.getBoard(pattern);
+        if (this.someoneWon(board)) {
+          _results.push(this.announceWinner());
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    BoardCtrl.prototype.mark = function($event) {
+      var cell, player;
+      this.$event = $event;
+      cell = this.$event.target.dataset.index;
       player = Object.keys(this.$scope.cells).length % 2 === 0 ? 'x' : 'o';
-      return this.$scope.cells[cell] = player;
+      this.$scope.cells[cell] = player;
+      return this.parseBoard();
     };
 
     return BoardCtrl;
