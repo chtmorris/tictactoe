@@ -29,6 +29,15 @@
           <div id="cell-8" data-index="8" data-ng-click="mark($event)" class="board-cell bottom right {{cells.8}}">{{cells.8}}</div>
         </div>
       </section>
+      <section id="win-message" class="{{theWinnerIs}} winner message" data-ng-show="theWinnerIs">
+        <p>{{theWinnerIs.toUpperCase()}} is the winner!</p>
+      </section>
+      <section id="tie-message" class="tied message" data-ng-show="cats">
+        <p>Tie game!</p>
+      </section>
+      <section id="current-player" class="{{currentPlayer}} current-player" data-ng-show="gameOn">
+        {{currentPlayer.toUpperCase()}} plays now
+      </section>
       <section id="control-button" class="button" data-ng-hide="gameOn">
         <button id="start-game" class="game-control" data-ng-click="startGame()">Play Game</button>
       </section>
