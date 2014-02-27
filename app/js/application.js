@@ -6,36 +6,37 @@
 
   this.ticTacToe = angular.module('TicTacToe', []);
 
-  ticTacToe.constant('Settings', {
-    WIN_PATTERNS: [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
-  });
+  ticTacToe.constant('WIN_PATTERNS', [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]);
 
   BoardCtrl = (function() {
-    function BoardCtrl($scope, Settings) {
+    function BoardCtrl($scope, WIN_PATTERNS) {
       this.$scope = $scope;
-      this.Settings = Settings;
+      this.WIN_PATTERNS = WIN_PATTERNS;
       this.mark = __bind(this.mark, this);
       this.parseBoard = __bind(this.parseBoard, this);
+      this.rowStillWinnable = __bind(this.rowStillWinnable, this);
+      this.announceTie = __bind(this.announceTie, this);
       this.announceWinner = __bind(this.announceWinner, this);
+      this.gameUnwinnable = __bind(this.gameUnwinnable, this);
       this.player = __bind(this.player, this);
+      this.movesRemaining = __bind(this.movesRemaining, this);
       this.numberOfMoves = __bind(this.numberOfMoves, this);
       this.resetBoard = __bind(this.resetBoard, this);
       this.getRow = __bind(this.getRow, this);
       this.getPatterns = __bind(this.getPatterns, this);
-      this.$scope.cells = {};
-      this.$scope.patternsToTest = this.getPatterns();
+      this.resetBoard();
       this.$scope.mark = this.mark;
     }
 
     BoardCtrl.prototype.getPatterns = function() {
-      return this.Settings.WIN_PATTERNS.filter(function() {
+      return this.patternsToTest = this.WIN_PATTERNS.filter(function() {
         return true;
       });
     };
 
     BoardCtrl.prototype.getRow = function(pattern) {
       var c, c0, c1, c2;
-      c = this.$scope.cells;
+      c = this.cells;
       c0 = c[pattern[0]] || pattern[0];
       c1 = c[pattern[1]] || pattern[1];
       c2 = c[pattern[2]] || pattern[2];
@@ -47,11 +48,24 @@
     };
 
     BoardCtrl.prototype.resetBoard = function() {
-      return this.$scope.cells = {};
+      this.cells = this.$scope.cells = {};
+      return this.getPatterns();
     };
 
     BoardCtrl.prototype.numberOfMoves = function() {
-      return Object.keys(this.$scope.cells).length;
+      return Object.keys(this.cells).length;
+    };
+
+    BoardCtrl.prototype.movesRemaining = function(player) {
+      var totalMoves;
+      totalMoves = 9 - this.numberOfMoves();
+      if (player === 'x') {
+        return Math.ceil(totalMoves / 2);
+      } else if (player === 'o') {
+        return Math.floor(totalMoves / 2);
+      } else {
+        return totalMoves;
+      }
     };
 
     BoardCtrl.prototype.player = function(options) {
@@ -67,33 +81,75 @@
       }
     };
 
+    BoardCtrl.prototype.isMixedRow = function(row) {
+      return !!row.match(/ox\d|o\dx|\dox|xo\d|x\do|\dxo/i);
+    };
+
+    BoardCtrl.prototype.hasOneX = function(row) {
+      return !!row.match(/x\d\d|\dx\d|\d\dx/i);
+    };
+
+    BoardCtrl.prototype.hasTwoXs = function(row) {
+      return !!row.match(/xx\d|x\dx|\dxx/i);
+    };
+
+    BoardCtrl.prototype.hasOneO = function(row) {
+      return !!row.match(/o\d\d|\do\d|\d\do/i);
+    };
+
+    BoardCtrl.prototype.hasTwoOs = function(row) {
+      return !!row.match(/oo\d|o\do|\doo/i);
+    };
+
+    BoardCtrl.prototype.isEmptyRow = function(row) {
+      return !!row.match(/\d\d\d/i);
+    };
+
+    BoardCtrl.prototype.gameUnwinnable = function() {
+      return this.patternsToTest.length < 1;
+    };
+
     BoardCtrl.prototype.announceWinner = function() {
       var winner;
       winner = this.player({
         whoMovedLast: true
       });
-      return alert("" + winner + " wins!");
+      alert("" + winner + " wins!");
+      return this.resetBoard();
+    };
+
+    BoardCtrl.prototype.announceTie = function() {
+      alert("It's a tie!");
+      return this.resetBoard();
+    };
+
+    BoardCtrl.prototype.rowStillWinnable = function(row) {
+      return !(this.isMixedRow(row) || (this.hasOneX(row) && this.movesRemaining('x') < 2) || (this.hasTwoXs(row) && this.movesRemaining('x') < 1) || (this.hasOneO(row) && this.movesRemaining('o') < 2) || (this.hasTwoOs(row) && this.movesRemaining('o') < 1) || (this.isEmptyRow(row) && this.movesRemaining() < 5));
     };
 
     BoardCtrl.prototype.parseBoard = function() {
-      return this.$scope.patternsToTest = this.$scope.patternsToTest.filter((function(_this) {
+      var won;
+      won = false;
+      this.patternsToTest = this.patternsToTest.filter((function(_this) {
         return function(pattern) {
           var row;
           row = _this.getRow(pattern);
-          if (_this.someoneWon(row)) {
-            _this.announceWinner();
-          }
-          return true;
+          won || (won = _this.someoneWon(row));
+          return _this.rowStillWinnable(row);
         };
       })(this));
+      if (won) {
+        return this.announceWinner();
+      } else if (this.gameUnwinnable()) {
+        return this.announceTie();
+      }
     };
 
     BoardCtrl.prototype.mark = function($event) {
-      var cell, player;
+      var cell;
       this.$event = $event;
       cell = this.$event.target.dataset.index;
-      player = this.player();
-      this.$scope.cells[cell] = this.player();
+      this.cells[cell] = this.player();
       return this.parseBoard();
     };
 
@@ -101,7 +157,7 @@
 
   })();
 
-  BoardCtrl.$inject = ["$scope", "Settings"];
+  BoardCtrl.$inject = ["$scope", "WIN_PATTERNS"];
 
   ticTacToe.controller("BoardCtrl", BoardCtrl);
 

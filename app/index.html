@@ -29,6 +29,9 @@
           <div id="cell-8" data-index="8" data-ng-click="mark($event)" class="board-cell bottom right {{cells.8}}">{{cells.8}}</div>
         </div>
       </section>
+      <section id="control-button" data-ng-hide="gameOn">
+        <button id="start-game" class="game-control" data-ng-click="startGame()">Play Game</button>
+      </section>
     </main>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
     <script src="/js/application.js"></script>

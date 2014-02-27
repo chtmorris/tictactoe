@@ -1,4 +1,4 @@
- "use strict"
+"use strict"
 
 @ticTacToe = angular.module 'TicTacToe', []
 
