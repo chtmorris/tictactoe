@@ -17,6 +17,7 @@
       this.rowStillWinnable = __bind(this.rowStillWinnable, this);
       this.announceTie = __bind(this.announceTie, this);
       this.announceWinner = __bind(this.announceWinner, this);
+      this.winningCells = __bind(this.winningCells, this);
       this.gameUnwinnable = __bind(this.gameUnwinnable, this);
       this.player = __bind(this.player, this);
       this.movesRemaining = __bind(this.movesRemaining, this);
@@ -61,7 +62,8 @@
       this.$scope.cats = false;
       this.cells = this.$scope.cells = {};
       this.$scope.currentPlayer = this.player();
-      return this.getPatterns();
+      this.getPatterns();
+      return this.$scope.win = "";
     };
 
     BoardCtrl.prototype.numberOfMoves = function() {
@@ -121,6 +123,10 @@
       return this.patternsToTest.length < 1;
     };
 
+    BoardCtrl.prototype.winningCells = function(winningCells) {
+      return this.$scope.winningCells = "win";
+    };
+
     BoardCtrl.prototype.announceWinner = function() {
       var winner;
       winner = this.player({
@@ -147,11 +153,13 @@
           var row;
           row = _this.getRow(pattern);
           won || (won = _this.someoneWon(row));
+          console.log(_this.someoneWon(row));
           return _this.rowStillWinnable(row);
         };
       })(this));
       if (won) {
-        return this.announceWinner();
+        this.announceWinner();
+        return this.winningCells();
       } else if (this.gameUnwinnable()) {
         return this.announceTie();
       }

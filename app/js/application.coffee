@@ -45,6 +45,7 @@ class BoardCtrl
     @cells = @$scope.cells = {}
     @$scope.currentPlayer = @player()
     @getPatterns()
+    @$scope.win = ""
 
   numberOfMoves: =>
     Object.keys(@cells).length
@@ -85,6 +86,9 @@ class BoardCtrl
   gameUnwinnable: =>
     @patternsToTest.length < 1
 
+  winningCells: (winningCells) =>
+      @$scope.winningCells = "win"
+
   announceWinner: =>
     winner = @player(whoMovedLast: true)
     @$scope.theWinnerIs = winner
@@ -108,10 +112,12 @@ class BoardCtrl
     @patternsToTest = @patternsToTest.filter (pattern) =>
       row = @getRow(pattern)
       won ||= @someoneWon(row)
+      console.log @someoneWon(row)
       @rowStillWinnable(row)
 
     if won
       @announceWinner()
+      @winningCells()
     else if @gameUnwinnable()
       @announceTie()
 
