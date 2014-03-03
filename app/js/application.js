@@ -31,24 +31,31 @@
       this.$scope.mark = this.mark;
       this.$scope.startGame = this.startGame;
       this.$scope.gameOn = false;
-      this.dbRef = new Firebase("https://tictactoe-morris.firebaseio.com/");
-      this.db = this.$firebase(this.dbRef);
     }
 
+    BoardCtrl.prototype.uniqueId = function(length) {
+      var id;
+      if (length == null) {
+        length = 8;
+      }
+      id = "";
+      while (id.length < length) {
+        id += Math.random().toString(36).substr(2);
+      }
+      return id.substr(0, length);
+    };
+
     BoardCtrl.prototype.startGame = function() {
-      this.db.$add({
-        name: "Charlie",
-        iq: 200
-      });
       this.$scope.gameOn = true;
       this.$scope.currentPlayer = this.player();
       return this.resetBoard();
     };
 
     BoardCtrl.prototype.getPatterns = function() {
-      return this.patternsToTest = this.WIN_PATTERNS.filter(function() {
+      this.patternsToTest = this.WIN_PATTERNS.filter(function() {
         return true;
       });
+      return this.winningCells = this.$scope.winningCells = {};
     };
 
     BoardCtrl.prototype.getRow = function(pattern) {
@@ -68,6 +75,9 @@
       this.$scope.theWinnerIs = false;
       this.$scope.cats = false;
       this.cells = this.$scope.cells = {};
+      this.id = this.uniqueId();
+      this.dbRef = new Firebase("https://tictactoe-morris.firebaseio.com/" + this.id);
+      this.db = this.$firebase(this.dbRef);
       this.$scope.currentPlayer = this.player();
       return this.getPatterns();
     };
@@ -130,15 +140,12 @@
     };
 
     BoardCtrl.prototype.announceWinner = function(winningPattern) {
-      var cell, winner, winners, _i, _len;
-      winner = this.player({
-        whoMovedLast: true
-      });
-      this.$scope.winCell = {};
-      winners = [];
-      for (_i = 0, _len = winners.length; _i < _len; _i++) {
-        cell = winners[_i];
-        this.$scope.winCell[cell] = __indexOf.call(winners, cell) >= 0 ? 'win' : 'unwin';
+      var k, v, winner, _ref, _ref1;
+      winner = this.cells[winningPattern[0]];
+      _ref = this.cells;
+      for (k in _ref) {
+        v = _ref[k];
+        this.winningCells[k] = (_ref1 = parseInt(k), __indexOf.call(winningPattern, _ref1) >= 0) ? 'win' : 'unwin';
       }
       this.$scope.theWinnerIs = winner;
       return this.$scope.gameOn = false;
@@ -154,20 +161,20 @@
     };
 
     BoardCtrl.prototype.parseBoard = function() {
-      var won;
-      won = false;
+      var winningPattern;
+      winningPattern = false;
       this.patternsToTest = this.patternsToTest.filter((function(_this) {
         return function(pattern) {
           var row;
           row = _this.getRow(pattern);
           if (_this.someoneWon(row)) {
-            won || (won = pattern);
+            winningPattern || (winningPattern = pattern);
           }
           return _this.rowStillWinnable(row);
         };
       })(this));
-      if (won) {
-        return this.announceWinner();
+      if (winningPattern) {
+        return this.announceWinner(winningPattern);
       } else if (this.gameUnwinnable()) {
         return this.announceTie();
       }
@@ -177,8 +184,11 @@
       var cell;
       this.$event = $event;
       cell = this.$event.target.dataset.index;
-      if (this.$scope.gameOn) {
+      if (this.$scope.gameOn && !this.cells[cell]) {
         this.cells[cell] = this.player();
+        this.db.$set({
+          board: this.cells
+        });
         this.parseBoard();
         return this.$scope.currentPlayer = this.player();
       }

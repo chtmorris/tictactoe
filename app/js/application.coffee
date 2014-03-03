@@ -20,17 +20,20 @@ class BoardCtrl
     @$scope.mark = @mark
     @$scope.startGame = @startGame
     @$scope.gameOn = false
-    @dbRef = new Firebase "https://tictactoe-morris.firebaseio.com/"
-    @db = @$firebase(@dbRef)
+
+  uniqueId: (length = 8) ->
+    id = ""
+    id += Math.random().toString(36).substr(2) while id.length < length
+    id.substr 0, length
 
   startGame: =>
-    @db.$add name: "Charlie", iq: 200
     @$scope.gameOn = true
     @$scope.currentPlayer = @player()
     @resetBoard()
 
   getPatterns: =>
     @patternsToTest = @WIN_PATTERNS.filter -> true
+    @winningCells = @$scope.winningCells = {}
 
   getRow: (pattern) =>
     c = @cells
@@ -46,6 +49,9 @@ class BoardCtrl
     @$scope.theWinnerIs = false
     @$scope.cats = false
     @cells = @$scope.cells = {}
+    @id = @uniqueId()
+    @dbRef = new Firebase "https://tictactoe-morris.firebaseio.com/#{@id}"
+    @db = @$firebase @dbRef
     @$scope.currentPlayer = @player()
     @getPatterns()
 
@@ -89,11 +95,9 @@ class BoardCtrl
     @patternsToTest.length < 1
 
   announceWinner: (winningPattern) =>
-    winner = @player(whoMovedLast: true)
-    @$scope.winCell = {}
-    winners = []
-    for cell in winners
-      @$scope.winCell[cell] = if cell in winners then 'win' else 'unwin'
+    winner = @cells[winningPattern[0]]
+    for k, v of @cells
+      @winningCells[k] = if parseInt(k) in winningPattern then 'win' else 'unwin'
     @$scope.theWinnerIs = winner
     @$scope.gameOn = false
 
@@ -110,22 +114,23 @@ class BoardCtrl
     (@isEmptyRow(row) and @movesRemaining() < 5))
 
   parseBoard: =>
-    won = false
+    winningPattern = false
 
     @patternsToTest = @patternsToTest.filter (pattern) =>
       row = @getRow(pattern)
-      won ||= pattern if @someoneWon(row)
+      winningPattern ||= pattern if @someoneWon(row)
       @rowStillWinnable(row)
 
-    if won
-      @announceWinner()
+    if winningPattern
+      @announceWinner(winningPattern)
     else if @gameUnwinnable()
       @announceTie()
 
   mark: (@$event) =>
     cell = @$event.target.dataset.index
-    if @$scope.gameOn
+    if @$scope.gameOn && !@cells[cell]
       @cells[cell] = @player()
+      @db.$set board: @cells
       @parseBoard()
       @$scope.currentPlayer = @player()
 
