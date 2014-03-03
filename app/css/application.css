@@ -9,6 +9,11 @@
  *  hsla( 208,  55.9%,  44.5%, 1 )   blue
  */
 
+/* Make ngCloak work even though AngularJS loaded at end of body */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 html,
 body {
   font-family: Verdana, Helvetica, Arial, sans-serif;
