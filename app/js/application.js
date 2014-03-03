@@ -47,15 +47,13 @@
 
     BoardCtrl.prototype.startGame = function() {
       this.$scope.gameOn = true;
-      this.$scope.currentPlayer = this.player();
       return this.resetBoard();
     };
 
     BoardCtrl.prototype.getPatterns = function() {
-      this.patternsToTest = this.WIN_PATTERNS.filter(function() {
+      return this.patternsToTest = this.WIN_PATTERNS.filter(function() {
         return true;
       });
-      return this.winningCells = this.$scope.winningCells = {};
     };
 
     BoardCtrl.prototype.getRow = function(pattern) {
@@ -75,9 +73,18 @@
       this.$scope.theWinnerIs = false;
       this.$scope.cats = false;
       this.cells = this.$scope.cells = {};
+      this.winningCells = this.$scope.winningCells = {};
+      if (this.unbind) {
+        this.unbind();
+      }
       this.id = this.uniqueId();
       this.dbRef = new Firebase("https://tictactoe-morris.firebaseio.com/" + this.id);
       this.db = this.$firebase(this.dbRef);
+      this.db.$bind(this.$scope, 'cells').then((function(_this) {
+        return function(unbind) {
+          return _this.unbind = unbind;
+        };
+      })(this));
       this.$scope.currentPlayer = this.player();
       return this.getPatterns();
     };
@@ -186,9 +193,6 @@
       cell = this.$event.target.dataset.index;
       if (this.$scope.gameOn && !this.cells[cell]) {
         this.cells[cell] = this.player();
-        this.db.$set({
-          board: this.cells
-        });
         this.parseBoard();
         return this.$scope.currentPlayer = this.player();
       }
