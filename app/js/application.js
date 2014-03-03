@@ -5,14 +5,15 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  this.ticTacToe = angular.module('TicTacToe', []);
+  this.ticTacToe = angular.module('TicTacToe', ["firebase"]);
 
   ticTacToe.constant('WIN_PATTERNS', [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]);
 
   BoardCtrl = (function() {
-    function BoardCtrl($scope, WIN_PATTERNS) {
+    function BoardCtrl($scope, WIN_PATTERNS, $firebase) {
       this.$scope = $scope;
       this.WIN_PATTERNS = WIN_PATTERNS;
+      this.$firebase = $firebase;
       this.mark = __bind(this.mark, this);
       this.parseBoard = __bind(this.parseBoard, this);
       this.rowStillWinnable = __bind(this.rowStillWinnable, this);
@@ -30,9 +31,15 @@
       this.$scope.mark = this.mark;
       this.$scope.startGame = this.startGame;
       this.$scope.gameOn = false;
+      this.dbRef = new Firebase("https://tictactoe-morris.firebaseio.com/");
+      this.db = this.$firebase(this.dbRef);
     }
 
     BoardCtrl.prototype.startGame = function() {
+      this.db.$add({
+        name: "Charlie",
+        iq: 200
+      });
       this.$scope.gameOn = true;
       this.$scope.currentPlayer = this.player();
       return this.resetBoard();
@@ -128,7 +135,7 @@
         whoMovedLast: true
       });
       this.$scope.winCell = {};
-      winners = [0, 1, 2];
+      winners = [];
       for (_i = 0, _len = winners.length; _i < _len; _i++) {
         cell = winners[_i];
         this.$scope.winCell[cell] = __indexOf.call(winners, cell) >= 0 ? 'win' : 'unwin';
@@ -153,7 +160,6 @@
         return function(pattern) {
           var row;
           row = _this.getRow(pattern);
-          console.log(pattern);
           if (_this.someoneWon(row)) {
             won || (won = pattern);
           }
@@ -172,7 +178,6 @@
       this.$event = $event;
       cell = this.$event.target.dataset.index;
       if (this.$scope.gameOn) {
-        cell = this.$event.target.dataset.index;
         this.cells[cell] = this.player();
         this.parseBoard();
         return this.$scope.currentPlayer = this.player();
@@ -183,7 +188,7 @@
 
   })();
 
-  BoardCtrl.$inject = ["$scope", "WIN_PATTERNS"];
+  BoardCtrl.$inject = ["$scope", "WIN_PATTERNS", "$firebase"];
 
   ticTacToe.controller("BoardCtrl", BoardCtrl);
 

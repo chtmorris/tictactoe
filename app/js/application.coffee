@@ -1,6 +1,6 @@
 "use strict"
 
-@ticTacToe = angular.module 'TicTacToe', []
+@ticTacToe = angular.module 'TicTacToe', ["firebase"]
 
 ticTacToe.constant 'WIN_PATTERNS',
   [
@@ -15,13 +15,16 @@ ticTacToe.constant 'WIN_PATTERNS',
   ]
 
 class BoardCtrl
-  constructor: (@$scope, @WIN_PATTERNS) ->
+  constructor: (@$scope, @WIN_PATTERNS, @$firebase) ->
     @resetBoard()
     @$scope.mark = @mark
     @$scope.startGame = @startGame
     @$scope.gameOn = false
+    @dbRef = new Firebase "https://tictactoe-morris.firebaseio.com/"
+    @db = @$firebase(@dbRef)
 
   startGame: =>
+    @db.$add name: "Charlie", iq: 200
     @$scope.gameOn = true
     @$scope.currentPlayer = @player()
     @resetBoard()
@@ -111,7 +114,6 @@ class BoardCtrl
 
     @patternsToTest = @patternsToTest.filter (pattern) =>
       row = @getRow(pattern)
-      console.log pattern
       won ||= pattern if @someoneWon(row)
       @rowStillWinnable(row)
 
@@ -123,11 +125,10 @@ class BoardCtrl
   mark: (@$event) =>
     cell = @$event.target.dataset.index
     if @$scope.gameOn
-      cell = @$event.target.dataset.index
       @cells[cell] = @player()
       @parseBoard()
       @$scope.currentPlayer = @player()
 
 
-BoardCtrl.$inject = ["$scope", "WIN_PATTERNS"]
+BoardCtrl.$inject = ["$scope", "WIN_PATTERNS", "$firebase"]
 ticTacToe.controller "BoardCtrl", BoardCtrl
