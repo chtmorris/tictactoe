@@ -16,7 +16,8 @@
 
 html,
 body {
-  font-family: Verdana, Helvetica, Arial, sans-serif;
+  background-image: url("http://www.designbolts.com/wp-content/uploads/2012/12/White-Paper-Seamless-Pattern-For-Website-Background.jpg");
+  font-family: 'Josefin Sans', sans-serif;
   font-weight: normal;
   font-style: normal;
   line-height: 1;
@@ -28,26 +29,27 @@ body {
 }
 
 h1 {
-  font-family: Verdana, Helvetica, Arial, sans-serif;
-  font-size: 2.4em;
-  font-weight: normal;
-  line-height: 3em;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 3.4em;
+  font-weight: bold;
+  line-height: 2em;
   margin: 20px 0 0;
   padding: 0;
   text-align: center;
 }
 
-.tic, .tac, .toe { background-color: hsla( 0, 0.0%, 100.0%, 1 ); }
+.tic, .tac, .toe { background-color: none; }
 .tic { color: hsla(   2,  64.7%,  50.0%, 1 ); }
 .tac { color: hsla( 120,  39.6%,  46.0%, 1 ); }
 .toe { color: hsla( 208,  55.9%,  44.5%, 1 ); }
 
 .button {
-  margin-top: 40px;
+  margin-top: 70px;
   text-align: center;
 }
 
 .button button {
+  font-family: 'Josefin Sans', sans-serif;
   font-weight: 400;
   text-align: center;
   vertical-align: middle;
@@ -75,14 +77,14 @@ h1 {
 }
 
 .board-cell {
-  font-family: Verdana, Helvetica, Arial, sans-serif;
-  font-size: 60px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 70px;
   float: left;
   text-align: center;
   text-transform: uppercase;
   width: 78px;
   height: 78px;
-  padding-top: 5px;
+  padding-top: 10px;
   border: 1px solid hsla( 0, 0.0%, 60.0%, 1 );
 }
 
@@ -98,7 +100,7 @@ h1 {
 .unwin { color: hsla( 0,  0.0%, 80.0%, 1 ); }
 
 .current-player {
-  padding: 25px 0;
+  padding: 55px 0;
   font-size: 32px;
   text-align: center;
 }
@@ -111,6 +113,7 @@ h1 {
   margin: auto;
   padding: 5px;
   font-size: 40px;
+  font-weight: bold;
   text-align: center;
   color: hsla( 60, 100.0%, 50.0%, 1 );
   -moz-border-radius: 10px;

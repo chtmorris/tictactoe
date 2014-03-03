@@ -46,8 +46,23 @@
     };
 
     BoardCtrl.prototype.startGame = function() {
-      this.$scope.gameOn = true;
-      return this.resetBoard();
+      this.resetBoard();
+      if (this.unbind) {
+        this.unbind();
+      }
+      this.id = this.uniqueId();
+      this.dbRef = new Firebase("https://tictactoe-morris.firebaseio.com/" + this.id);
+      this.db = this.$firebase(this.dbRef.child('board'));
+      this.db.$bind(this.$scope, 'cells').then((function(_this) {
+        return function(unbind) {
+          _this.unbind = unbind;
+          return _this.$scope.gameOn = true;
+        };
+      })(this));
+      this.dbplayer = this.dbRef.child('players');
+      return this.dbplayer.set({
+        player1: "" + player
+      });
     };
 
     BoardCtrl.prototype.getPatterns = function() {
@@ -74,17 +89,6 @@
       this.$scope.cats = false;
       this.cells = this.$scope.cells = {};
       this.winningCells = this.$scope.winningCells = {};
-      if (this.unbind) {
-        this.unbind();
-      }
-      this.id = this.uniqueId();
-      this.dbRef = new Firebase("https://tictactoe-morris.firebaseio.com/" + this.id);
-      this.db = this.$firebase(this.dbRef);
-      this.db.$bind(this.$scope, 'cells').then((function(_this) {
-        return function(unbind) {
-          return _this.unbind = unbind;
-        };
-      })(this));
       this.$scope.currentPlayer = this.player();
       return this.getPatterns();
     };
