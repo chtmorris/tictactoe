@@ -85,8 +85,12 @@ class BoardCtrl
   gameUnwinnable: =>
     @patternsToTest.length < 1
 
-  announceWinner: =>
+  announceWinner: (winningPattern) =>
     winner = @player(whoMovedLast: true)
+    @$scope.winCell = {}
+    winners = []
+    for cell in winners
+      @$scope.winCell[cell] = if cell in winners then 'win' else 'unwin'
     @$scope.theWinnerIs = winner
     @$scope.gameOn = false
 
@@ -107,7 +111,8 @@ class BoardCtrl
 
     @patternsToTest = @patternsToTest.filter (pattern) =>
       row = @getRow(pattern)
-      won ||= @someoneWon(row)
+      console.log pattern
+      won ||= pattern if @someoneWon(row)
       @rowStillWinnable(row)
 
     if won

@@ -2,7 +2,8 @@
 (function() {
   "use strict";
   var BoardCtrl,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   this.ticTacToe = angular.module('TicTacToe', []);
 
@@ -121,11 +122,17 @@
       return this.patternsToTest.length < 1;
     };
 
-    BoardCtrl.prototype.announceWinner = function() {
-      var winner;
+    BoardCtrl.prototype.announceWinner = function(winningPattern) {
+      var cell, winner, winners, _i, _len;
       winner = this.player({
         whoMovedLast: true
       });
+      this.$scope.winCell = {};
+      winners = [0, 1, 2];
+      for (_i = 0, _len = winners.length; _i < _len; _i++) {
+        cell = winners[_i];
+        this.$scope.winCell[cell] = __indexOf.call(winners, cell) >= 0 ? 'win' : 'unwin';
+      }
       this.$scope.theWinnerIs = winner;
       return this.$scope.gameOn = false;
     };
@@ -146,7 +153,10 @@
         return function(pattern) {
           var row;
           row = _this.getRow(pattern);
-          won || (won = _this.someoneWon(row));
+          console.log(pattern);
+          if (_this.someoneWon(row)) {
+            won || (won = pattern);
+          }
           return _this.rowStillWinnable(row);
         };
       })(this));

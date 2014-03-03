@@ -14,19 +14,19 @@
     <main role="main" data-ng-controller="BoardCtrl">
       <section id="gameboard" class="board">
         <div id="row-0" class="board-row">
-          <div id="cell-0" data-index="0" data-ng-click="mark($event)" class="board-cell top left {{cells.0}}">{{cells.0}}</div>
-          <div id="cell-1" data-index="1" data-ng-click="mark($event)" class="board-cell top center {{cells.1}}">{{cells.1}}</div>
-          <div id="cell-2" data-index="2" data-ng-click="mark($event)" class="board-cell top right {{cells.2}}">{{cells.2}}</div>
+          <div id="cell-0" data-index="0" data-ng-click="mark($event)" class="board-cell top left {{cells.0}} {{winCell.0}}">{{cells.0}}</div>
+          <div id="cell-1" data-index="1" data-ng-click="mark($event)" class="board-cell top center {{cells.1}} {{winCell.1}}">{{cells.1}}</div>
+          <div id="cell-2" data-index="2" data-ng-click="mark($event)" class="board-cell top right {{cells.2}} {{winCell.2}}">{{cells.2}}</div>
         </div>
         <div id="row-1" class="board-row">
-          <div id="cell-3" data-index="3" data-ng-click="mark($event)" class="board-cell middle left {{cells.3}}">{{cells.3}}</div>
-          <div id="cell-4" data-index="4" data-ng-click="mark($event)" class="board-cell middle center {{cells.4}}">{{cells.4}}</div>
-          <div id="cell-5" data-index="5" data-ng-click="mark($event)" class="board-cell middle right {{cells.5}}">{{cells.5}}</div>
+          <div id="cell-3" data-index="3" data-ng-click="mark($event)" class="board-cell middle left {{cells.3}} {{winCell.3}}">{{cells.3}}</div>
+          <div id="cell-4" data-index="4" data-ng-click="mark($event)" class="board-cell middle center {{cells.4}} {{winCell.4}}">{{cells.4}}</div>
+          <div id="cell-5" data-index="5" data-ng-click="mark($event)" class="board-cell middle right {{cells.5}} {{winCell.5}}">{{cells.5}}</div>
         </div>
         <div id="row-2" class="board-row">
-          <div id="cell-6" data-index="6" data-ng-click="mark($event)" class="board-cell bottom left {{cells.6}}">{{cells.6}}</div>
-          <div id="cell-7" data-index="7" data-ng-click="mark($event)" class="board-cell bottom center {{cells.7}}">{{cells.7}}</div>
-          <div id="cell-8" data-index="8" data-ng-click="mark($event)" class="board-cell bottom right {{cells.8}}">{{cells.8}}</div>
+          <div id="cell-6" data-index="6" data-ng-click="mark($event)" class="board-cell bottom left {{cells.6}} {{winCell.6}}">{{cells.6}}</div>
+          <div id="cell-7" data-index="7" data-ng-click="mark($event)" class="board-cell bottom center {{cells.7}} {{winCell.7}}">{{cells.7}}</div>
+          <div id="cell-8" data-index="8" data-ng-click="mark($event)" class="board-cell bottom right {{cells.8}} {{winCell.8}}">{{cells.8}}</div>
         </div>
       </section>
       <section id="win-message" class="{{theWinnerIs}} winner message" data-ng-show="theWinnerIs">
