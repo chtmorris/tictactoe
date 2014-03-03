@@ -35,8 +35,9 @@ class BoardCtrl
     @db.$bind( @$scope, 'cells' ).then (unbind) =>
       @unbind = unbind
       @$scope.gameOn = true
-    @dbplayer = @dbRef.child('players')
-    @dbplayer.set { player1: "#{player}"}
+    @dbplayer = @$firebase @dbRef.child('player')
+    @dbplayer.$set @$scope.currentPlayer
+    @dbplayer.$bind( @$scope, 'currentPlayer' )
 
   getPatterns: =>
     @patternsToTest = @WIN_PATTERNS.filter -> true

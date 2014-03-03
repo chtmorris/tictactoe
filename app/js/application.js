@@ -59,10 +59,9 @@
           return _this.$scope.gameOn = true;
         };
       })(this));
-      this.dbplayer = this.dbRef.child('players');
-      return this.dbplayer.set({
-        player1: "" + player
-      });
+      this.dbplayer = this.$firebase(this.dbRef.child('player'));
+      this.dbplayer.$set(this.$scope.currentPlayer);
+      return this.dbplayer.$bind(this.$scope, 'currentPlayer');
     };
 
     BoardCtrl.prototype.getPatterns = function() {
