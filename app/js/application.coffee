@@ -32,15 +32,15 @@ class BoardCtrl
     @resetBoard()
     @unbind() if @unbind
     @id = @uniqueId()
-    @games = @$firebase @gamesRef
-    @gameRef = @gamesRef.child(@id)
-    @dbBoard = @gameRef.child("board")
-    @$firebase(@dbBoard).$bind( @$scope, 'cells' ).then (unbind) =>
-      @unbind = unbind
-      @$scope.gameOn = true
-    @dbplayer = @$firebase @gameRef.child('player')
-    @dbplayer.$set @$scope.currentPlayer
-    @dbplayer.$bind( @$scope, 'currentPlayer' )
+    # @games = @$firebase @gamesRef
+    # @gameRef = @gamesRef.child(@id)
+    # @dbBoard = @gameRef.child("board")
+    # @$firebase(@dbBoard).$bind( @$scope, 'cells' ).then (unbind) =>
+    #   @unbind = unbind
+    #   @$scope.gameOn = true
+    # @dbplayer = @$firebase @gameRef.child('player')
+    # @dbplayer.$set @$scope.currentPlayer
+    # @dbplayer.$bind( @$scope, 'currentPlayer' )
     @getGame()
 
   createPendingGame: =>
@@ -64,8 +64,15 @@ class BoardCtrl
         if snapshot.val() is null
           console.log "join game with ID: " + @gameID
         else
-          @id
-          console.log "create game with ID: " + @id
+          @games = @$firebase @gamesRef
+          @gameRef = @gamesRef.child(@id)
+          @dbBoard = @gameRef.child("board")
+          @$firebase(@dbBoard).$bind( @$scope, 'cells' ).then (unbind) =>
+            @unbind = unbind
+            @$scope.gameOn = true
+          @dbplayer = @$firebase @gameRef.child('player')
+          @dbplayer.$set @$scope.currentPlayer
+          @dbplayer.$bind( @$scope, 'currentPlayer' )
 
 
   getPatterns: =>

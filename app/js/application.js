@@ -55,18 +55,6 @@
         this.unbind();
       }
       this.id = this.uniqueId();
-      this.games = this.$firebase(this.gamesRef);
-      this.gameRef = this.gamesRef.child(this.id);
-      this.dbBoard = this.gameRef.child("board");
-      this.$firebase(this.dbBoard).$bind(this.$scope, 'cells').then((function(_this) {
-        return function(unbind) {
-          _this.unbind = unbind;
-          return _this.$scope.gameOn = true;
-        };
-      })(this));
-      this.dbplayer = this.$firebase(this.gameRef.child('player'));
-      this.dbplayer.$set(this.$scope.currentPlayer);
-      this.dbplayer.$bind(this.$scope, 'currentPlayer');
       return this.getGame();
     };
 
@@ -92,8 +80,16 @@
             if (snapshot.val() === null) {
               return console.log("join game with ID: " + _this.gameID);
             } else {
-              _this.id;
-              return console.log("create game with ID: " + _this.id);
+              _this.games = _this.$firebase(_this.gamesRef);
+              _this.gameRef = _this.gamesRef.child(_this.id);
+              _this.dbBoard = _this.gameRef.child("board");
+              _this.$firebase(_this.dbBoard).$bind(_this.$scope, 'cells').then(function(unbind) {
+                _this.unbind = unbind;
+                return _this.$scope.gameOn = true;
+              });
+              _this.dbplayer = _this.$firebase(_this.gameRef.child('player'));
+              _this.dbplayer.$set(_this.$scope.currentPlayer);
+              return _this.dbplayer.$bind(_this.$scope, 'currentPlayer');
             }
           }
         };
