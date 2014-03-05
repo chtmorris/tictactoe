@@ -20,6 +20,8 @@ class BoardCtrl
     @$scope.mark = @mark
     @$scope.startGame = @startGame
     @$scope.gameOn = false
+    @pendingGameRef = new Firebase "https://tictactoe-morris.firebaseio.com/pendingGame"
+    @gamesRef = new Firebase "https://tictactoe-morris.firebaseio.com/games"
 
   uniqueId: (length = 8) ->
     id = ""
@@ -30,14 +32,41 @@ class BoardCtrl
     @resetBoard()
     @unbind() if @unbind
     @id = @uniqueId()
-    @dbRef = new Firebase "https://tictactoe-morris.firebaseio.com/#{@id}"
-    @db = @$firebase @dbRef.child('board')
-    @db.$bind( @$scope, 'cells' ).then (unbind) =>
+    @games = @$firebase @gamesRef
+    @gameRef = @gamesRef.child(@id)
+    @dbBoard = @gameRef.child("board")
+    @$firebase(@dbBoard).$bind( @$scope, 'cells' ).then (unbind) =>
       @unbind = unbind
       @$scope.gameOn = true
-    @dbplayer = @$firebase @dbRef.child('player')
+    @dbplayer = @$firebase @gameRef.child('player')
     @dbplayer.$set @$scope.currentPlayer
     @dbplayer.$bind( @$scope, 'currentPlayer' )
+    @getGame()
+
+  createPendingGame: =>
+    console.log "lala"
+    # @pendingGame = @$firebase @pendingGameRef
+    # @pendingQueueRef = @pendingGameRef.child(@id)
+    # @$firebase(@pendingQueueRef).$set @id
+
+  getGame: =>
+    @pendingGameRef.transaction (input) =>
+      if input
+        console.log "join game"
+        @gameID = input
+        null
+      else
+        console.log "create game"
+        @id
+
+    , (error, committed, snapshot) =>
+      if committed and not error
+        if snapshot.val() is null
+          console.log "join game with ID: " + @gameID
+        else
+          @id
+          console.log "create game with ID: " + @id
+
 
   getPatterns: =>
     @patternsToTest = @WIN_PATTERNS.filter -> true

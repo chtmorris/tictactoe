@@ -26,11 +26,15 @@
       this.resetBoard = __bind(this.resetBoard, this);
       this.getRow = __bind(this.getRow, this);
       this.getPatterns = __bind(this.getPatterns, this);
+      this.getGame = __bind(this.getGame, this);
+      this.createPendingGame = __bind(this.createPendingGame, this);
       this.startGame = __bind(this.startGame, this);
       this.resetBoard();
       this.$scope.mark = this.mark;
       this.$scope.startGame = this.startGame;
       this.$scope.gameOn = false;
+      this.pendingGameRef = new Firebase("https://tictactoe-morris.firebaseio.com/pendingGame");
+      this.gamesRef = new Firebase("https://tictactoe-morris.firebaseio.com/games");
     }
 
     BoardCtrl.prototype.uniqueId = function(length) {
@@ -51,17 +55,49 @@
         this.unbind();
       }
       this.id = this.uniqueId();
-      this.dbRef = new Firebase("https://tictactoe-morris.firebaseio.com/" + this.id);
-      this.db = this.$firebase(this.dbRef.child('board'));
-      this.db.$bind(this.$scope, 'cells').then((function(_this) {
+      this.games = this.$firebase(this.gamesRef);
+      this.gameRef = this.gamesRef.child(this.id);
+      this.dbBoard = this.gameRef.child("board");
+      this.$firebase(this.dbBoard).$bind(this.$scope, 'cells').then((function(_this) {
         return function(unbind) {
           _this.unbind = unbind;
           return _this.$scope.gameOn = true;
         };
       })(this));
-      this.dbplayer = this.$firebase(this.dbRef.child('player'));
+      this.dbplayer = this.$firebase(this.gameRef.child('player'));
       this.dbplayer.$set(this.$scope.currentPlayer);
-      return this.dbplayer.$bind(this.$scope, 'currentPlayer');
+      this.dbplayer.$bind(this.$scope, 'currentPlayer');
+      return this.getGame();
+    };
+
+    BoardCtrl.prototype.createPendingGame = function() {
+      return console.log("lala");
+    };
+
+    BoardCtrl.prototype.getGame = function() {
+      return this.pendingGameRef.transaction((function(_this) {
+        return function(input) {
+          if (input) {
+            console.log("join game");
+            _this.gameID = input;
+            return null;
+          } else {
+            console.log("create game");
+            return _this.id;
+          }
+        };
+      })(this), (function(_this) {
+        return function(error, committed, snapshot) {
+          if (committed && !error) {
+            if (snapshot.val() === null) {
+              return console.log("join game with ID: " + _this.gameID);
+            } else {
+              _this.id;
+              return console.log("create game with ID: " + _this.id);
+            }
+          }
+        };
+      })(this));
     };
 
     BoardCtrl.prototype.getPatterns = function() {
